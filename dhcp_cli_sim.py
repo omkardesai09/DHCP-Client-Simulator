@@ -29,6 +29,10 @@ conf.checkIPaddr = False
 
 def generate_client_packets():
 
+    all_ip_addr = []
+    client_mac_addr = []
+    server_ip_addr = []
+
     x_id = random.randrange(1, 100000)  #x_id = transaction number, random identifier for single DHCP transaction
     cli_mac = '00:15' + str(RandMAC())[5:]
     str_cli_mac = mac2str(cli_mac)
@@ -50,6 +54,15 @@ def generate_client_packets():
 
     request_list, ack_list = srp(request_pkt, iface=dst_inf, timeout=2, verbose=2)
 
+    ip_addr_offered_ack = request_list[0][1][BOOTP].yiaddr
+
+    server_ip = request_list[0][1][IP].src
+
+    all_ip_addr.append(ip_addr_offered_ack)
+    client_mac_addr.append(cli_mac)
+    server_ip_addr.append(server_ip)
+
+    return all_ip_addr, client_mac_addr, server_ip_addr
 
 
 
