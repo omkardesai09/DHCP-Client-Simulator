@@ -37,11 +37,20 @@ def generate_client_packets():
     discover_pkt = Ether(src = cli_mac, dst = 'ff:ff:ff:ff:ff:ff') / IP(src='0.0.0.0', dst='255.255.255.255') / UDP(sport=68, dport=67) / BOOTP(op=1, xid=x_id, chaddr=str_cli_mac) / DHCP(options=[('message-type', 'discover'),('end')])
 
     # Send DHCP packet and receive Offer packet using srp() function
-    # It will return two lists, one contains Discover packet and other contains offer packet
+    # It will return one list with two tuples, one contains Discover packet and other contains offer packet
 
     discover_list, offer_list = srp(discover_pkt, iface=dst_inf, timeout=2, verbose=0)
 
-    
+    ip_addr_offered = discover_list[0][1][BOOTP].yiaddr
+
+    # DHCP request packet
+    request_pkt = Ether(src=cli_mac, dst='ff:ff:ff:ff:ff:ff') / IP(src='0.0.0.0', dst='255.255.255.255') / UDP(sport=68, dport=67) / BOOTP(op=1, xid=x_id, chaddr=str_cli_mac) / DHCP(options=[('message-type', 'request'), ('requested_addr', ip_addr_offered), ('end')])
+
+    # Sending request packet and receive Ack packet
+
+    request_list, ack_list = srp(request_pkt, iface=dst_inf, timeout=2, verbose=2)
+
+
 
 
 
