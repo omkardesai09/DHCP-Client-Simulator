@@ -24,5 +24,24 @@ print "\n Now interface %s is in promiscous mode\n" %net_iface
 
 conf.checkIPaddr = False
 
+# DHCP packets
+# There are 4 types of DHCP packets: Discover, Offer, Request, Acknowledgement
+
+def generate_client_packets():
+
+    x_id = random.randrange(1, 100000)  #x_id = transaction number, random identifier for single DHCP transaction
+    cli_mac = '00:15' + str(RandMAC())[5:]
+    str_cli_mac = mac2str(cli_mac)
+
+    # DHCP discover packet
+    discover_pkt = Ether(src = cli_mac, dst = 'ff:ff:ff:ff:ff:ff') / IP(src='0.0.0.0', dst='255.255.255.255') / UDP(sport=68, dport=67) / BOOTP(op=1, xid=x_id, chaddr=str_cli_mac) / DHCP(options=[('message-type', 'discover'),('end')])
+
+    # Send DHCP packet and receive Offer packet using srp() function
+    # It will return two lists, one contains Discover packet and other contains offer packet
+
+    discover_list, offer_list = srp(discover_pkt, iface=dst_inf, timeout=2, verbose=0)
+
+    
+
 
 
