@@ -72,6 +72,31 @@ def generate_release_packet(ip, cli_mac, server):
     release_pkt = IP(src=ip, dst=server) / UDP(sport=68, dport=67) / BOOTP(chaddr=str_cli_mac, ciaddr=ip, xid=x_id) / DHCP(options=[('message-type', 'release'), ('server_id', server), ('end')])
     send(release_pkt, verbose=0)
 
+# Build user menu
+
+try:
+    while True:
+        #There are three options provided for user to simulate following application
+        # 1. Simulate DHCP client, 2. Simulate DHCP release, 3. Exit
+        choice=raw_input("\n Select appropriate option from below: \n1. Simulate DHCP clients\n2. Release DHCP bindings\n3. Exit")
+
+        if choice == 1:
+            cli_no = raw_input('\nEnter number of clients you would like to simulate: ')
+            dst_inf = raw_input('\nEnter the interface on which to send packets: ')
+
+            for i in range(0,int(cli_no)):
+                ip_leases = generate_client_packets()[0]
+
+            print "\nIP addresses assigned by DHCP server are stored in ip_lease.txt file\n"
+
+            ip_addr = open('ip_lease.txt', 'w')
+
+            for index, value in enumerate(ip_leases):
+                # Below line is a another way to write anything in file OR alternative option for write method
+                print>>ip_addr, value + '\t' + client_mac_addr[index] + '\t' + server_ip_addr[index]
+            ip_addr.close()
+
+            continue
 
 
 
