@@ -85,10 +85,6 @@ try:
             cli_no = raw_input('\nEnter number of clients you would like to simulate: ')
             dst_inf = raw_input('\nEnter the interface on which to send packets: ')
 
-            #global ip_leases
-            #global client_mac_addr
-            #global server_ip_addr
-
             for i in range(0, int(cli_no)):
                 ip_leases = generate_client_packets()[0]
 
@@ -113,6 +109,16 @@ try:
                     ip_index = ip_leases.index(user_ip_addr)
                     generate_release_packet(user_ip_addr, client_mac_addr[ip_index], server_ip_addr[ip_index])
                     print "\nSending release packet...\n"
+
+                    ip_addr = open('ip_lease.txt', 'r')
+                    lines = ip_addr.readlines()
+                    ip_addr.close()
+                    ip_addr_new = open('ip_lease.txt', 'w')
+                    for line in lines:
+                        if line.startswith(user_ip_addr) != True:
+                            ip_addr_new.write(line)
+                    ip_addr_new.close()
+
 
                 else:
                     print "No IP address found\n"
