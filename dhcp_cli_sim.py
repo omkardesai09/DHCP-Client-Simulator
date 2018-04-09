@@ -65,5 +65,14 @@ def generate_client_packets():
     return all_ip_addr, client_mac_addr, server_ip_addr
 
 
+def generate_release_packet(ip, cli_mac, server):
+    x_id = random.randrange(1, 100000)
+    str_cli_mac = mac2str(cli_mac)
+
+    release_pkt = IP(src=ip, dst=server) / UDP(sport=68, dport=67) / BOOTP(chaddr=str_cli_mac, ciaddr=ip, xid=x_id) / DHCP(options=[('message-type', 'release'), ('server_id', server), ('end')])
+    send(release_pkt, verbose=0)
+
+
+
 
 
