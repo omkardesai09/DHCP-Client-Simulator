@@ -1,0 +1,35 @@
+!
+!
+configure terminal
+!
+interface fa0/0
+ip address 192.168.2.10 255.255.255.0
+no shut
+exit
+!
+ip dhcp excluded-address 192.168.2.10
+!
+ip dhcp excluded-address 192.168.2.100
+!
+!
+ip dhcp pool mypool
+!
+!
+network 192.168.2.0 255.255.255.0
+default-router 192.168.2.10
+exit
+!
+!
+exit
+!
+show ip dhcp pool
+!
+!
+debug ip dhcp server events
+!
+!
+debug ip dhcp server packet
+!
+wr
+!
+
